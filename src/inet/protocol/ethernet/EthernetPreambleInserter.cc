@@ -26,6 +26,7 @@ Define_Module(EthernetPreambleInserter);
 void EthernetPreambleInserter::processPacket(Packet *packet)
 {
     const auto& header = makeShared<EthernetPhyHeader>();
+    //header->setPreambleType(SFD);
     packet->insertAtFront(header);
     packet->addTagIfAbsent<PacketProtocolTag>()->setProtocol(&Protocol::ethernetPhy);
 }
