@@ -203,5 +203,14 @@ void InterPacketGap::handlePushPacketProcessed(Packet *packet, cGate *gate, bool
         producer->handlePushPacketProcessed(packet, inputGate->getPathStartGate(), successful);
 }
 
+void InterPacketGap::refreshDisplay() const
+{
+    PacketPusherBase::refreshDisplay();
+
+    char buf[40];
+    sprintf(buf, "ifg: %f ns", par("duration").doubleValue()*1e9);
+    getDisplayString().setTagArg("t", 0, buf);
+}
+
 } // namespace inet
 
