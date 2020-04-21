@@ -22,7 +22,7 @@ import inet.queueing.base.PacketProcessorBase;
 simple InterPacketGap extends PacketProcessorBase
 {
     parameters:
-        bool initialChannelBusy = default(true); // assume that channel was busy before the simulation started
+        bool initialChannelBusy = default(false); // assume that channel was busy before the simulation started
         volatile double duration @unit(s);
         @display("i=block/timer");
         @class(InterPacketGap);
