@@ -139,6 +139,8 @@ void PreemptibleTransmitter::scheduleTxEndTimer(Signal *signal)
 
 b PreemptibleTransmitter::getPushPacketProcessedLength(Packet *packet, cGate *gate)
 {
+    if (txPacket == nullptr)
+        return b(0);
     simtime_t transmissionDuration = simTime() - txStartTime;
     return b(std::floor(datarate.get() * transmissionDuration.dbl()));
 }
