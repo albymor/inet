@@ -31,6 +31,7 @@ void PreemptibleTransmitter::initialize(int stage)
 PreemptibleTransmitter::~PreemptibleTransmitter()
 {
     cancelAndDelete(txEndTimer);
+    delete txPacket;
 }
 
 void PreemptibleTransmitter::handleMessage(cMessage *message)
