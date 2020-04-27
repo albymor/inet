@@ -35,6 +35,9 @@ import inet.queueing.server.InstantServer;
 module EthernetInterfaceEnc extends InterfaceEntry like IEthernetInterface
 {
     parameters:
+        @class(InterfaceEntry);
+        @lifecycleSupport;
+        @display("i=block/ifcard");
         string interfaceTableModule;
         string address = default("auto");
         bool broadcast = default(true);
@@ -44,8 +47,6 @@ module EthernetInterfaceEnc extends InterfaceEntry like IEthernetInterface
         double bitrate @unit(bps) = default(nan bps);
         int mtu @unit(B) = default(1500B);
         string fcsMode @enum("declared","computed") = default("declared");
-        @class(InterfaceEntry);
-        @display("i=block/ifcard");
         padding.minLength = 60B;
         ifg.duration = 96s/dropUnit(bitrate);
         transmitter.datarate = bitrate;
