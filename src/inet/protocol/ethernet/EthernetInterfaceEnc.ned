@@ -20,6 +20,7 @@ package inet.protocol.ethernet;
 import inet.linklayer.contract.IEthernetInterface;
 import inet.linklayer.contract.ITrafficConditioner;
 import inet.linklayer.ethernet.IEtherEncap;
+import inet.linklayer.ieee8021q.IIeee8021qEncap;
 import inet.networklayer.common.InterfaceEntry;
 import inet.protocol.common.InterPacketGap;
 import inet.protocol.common.PacketSerializer;
@@ -69,7 +70,11 @@ module EthernetInterfaceEnc extends InterfaceEntry like IEthernetInterface
         }
         encap: <default("EtherEncap")> like IEtherEncap {
             parameters:
-                @display("p=300,200");
+                @display("p=300,150");
+        }
+        qEncap: <default("")> like IIeee8021qEncap if typename != "" {
+            parameters:
+                @display("p=300,250");
         }
         queue: PacketQueue {
             parameters:
@@ -148,7 +153,10 @@ module EthernetInterfaceEnc extends InterfaceEntry like IEthernetInterface
             ingressTC.out --> { @display("m=n"); } --> upperLayerOut;
         }
 
-        encap.lowerLayerOut --> queue.in;
+        encap.lowerLayerOut --> qEncap.upperLayerIn if exists(qEncap);
+        qEncap.lowerLayerOut -->queue.in if exists(qEncap);
+        encap.lowerLayerOut -->queue.in if !exists(qEncap);
+
         queue.out --> server.in;
         server.out --> fcsDropper.in;
         fcsDropper.out --> packetTrimmer.in;
@@ -161,7 +169,10 @@ module EthernetInterfaceEnc extends InterfaceEntry like IEthernetInterface
         transmitter.out --> txCm.in;
         txCm.physOut --> { @display("m=s"); } --> phys$o;
 
-        fcsChecker.out --> encap.lowerLayerIn;
+        fcsChecker.out --> encap.lowerLayerIn if !exists(qEncap);
+        fcsChecker.out --> qEncap.lowerLayerIn if exists(qEncap);
+        qEncap.upperLayerOut --> encap.lowerLayerIn if exists(qEncap);
+
         preambleChecker.out --> fcsChecker.in;
         receiver.out --> preambleChecker.in;
         phys$i --> { @display("m=s"); } --> receiver.in;
