@@ -15,13 +15,23 @@
 // along with this program; if not, see http://www.gnu.org/licenses/.
 //
 
-package inet.queueing.classifier;
+package inet.protocol.common;
+
+import inet.queueing.base.PacketProcessorBase;
+import inet.queueing.contract.IPacketFlow;
+
 
 //
-// This module classifies packets based on the attached ~UserPriority tag.
+// This module takes packets passed to its input and streams them to its output.
 //
-simple UserPriorityClassifier extends PacketClassifier
+simple PreemptibleStreamer extends PacketProcessorBase like IPacketFlow
 {
     parameters:
-        classifierClass = default("inet::queueing::PacketUserPriorityReqClassifier");
+        int minPacketLength @unit(b);
+        int roundingLength @unit(b) = default(1B);
+        @class(PreemptibleStreamer);
+        @display("i=block/cogwheel");
+    gates:
+        input in @labels(send,push,pull,pass);
+        output out @labels(send,push,pull,stream);
 }

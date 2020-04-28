@@ -13,13 +13,15 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 //
 
-package inet.protocol.server;
+package inet.protocol.ieee8021q;
 
-import inet.queueing.base.PacketServerBase;
-
-simple PreemptingServer extends PacketServerBase
+moduleinterface IIeee8021qChecker
 {
     parameters:
-        double datarate @unit(bps);
-        @class(PreemptingServer);
+        string vlanTagType @enum("c","s");
+        @display("i=block/cogwheel");
+    gates:
+        input in;
+        output out;
 }
+

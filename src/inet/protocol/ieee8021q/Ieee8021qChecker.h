@@ -13,13 +13,31 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 //
 
-package inet.protocol.server;
+#ifndef __INET_IEEE8021QCHECKER_H
+#define __INET_IEEE8021QCHECKER_H
 
-import inet.queueing.base.PacketServerBase;
+#include "inet/queueing/base/PacketFilterBase.h"
 
-simple PreemptingServer extends PacketServerBase
+namespace inet {
+
+using namespace inet::queueing;
+
+class INET_API Ieee8021qChecker : public PacketFilterBase
 {
-    parameters:
-        double datarate @unit(bps);
-        @class(PreemptingServer);
-}
+  protected:
+    int etherType = -1;
+    std::vector<int> vlanIdFilter;
+
+  protected:
+    virtual void initialize(int stage) override;
+    virtual void processPacket(Packet *packet) override;
+    virtual void dropPacket(Packet *packet) override;
+
+  public:
+    virtual bool matchesPacket(const Packet *packet) const override;
+};
+
+} // namespace inet
+
+#endif // ifndef __INET_IEEE8021QCHECKER_H
+

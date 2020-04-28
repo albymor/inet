@@ -15,10 +15,23 @@
 
 package inet.tutorials.protocol;
 
-import inet.networklayer.configurator.ipv4.Ipv4NetworkConfigurator;
+import inet.applications.udpapp.UdpApp;
+import inet.applications.udpapp.UdpSocketIo;
 import inet.networks.WiredNetworkBase;
 import inet.node.ethernet.Eth100M;
 import inet.node.inet.StandardHost;
+import inet.queueing.marker.PacketTagger;
+
+module UdpTaggerApp extends UdpApp
+{
+    submodules:
+        tagger: PacketTagger {
+            @display("p=61,200");
+        }
+    connections:
+        source.out --> { @reconnect; } --> tagger.in;
+        tagger.out --> { @reconnect; } --> io.trafficIn;
+}
 
 network EthernetExample extends WiredNetworkBase
 {

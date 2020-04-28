@@ -1,5 +1,5 @@
 //
-// Copyright (C) OpenSim Ltd.
+// Copyright (C) 2003 Andras Varga; CTIE, Monash University, Australia
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
@@ -12,16 +12,16 @@
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
-// along with this program; if not, see http://www.gnu.org/licenses/.
+// along with this program; if not, see <http://www.gnu.org/licenses/>.
 //
 
-package inet.queueing.classifier;
+import inet.common.INETDefs;
+import inet.common.packet.chunk.Chunk;
 
-//
-// This module classifies packets based on the attached ~UserPriority tag.
-//
-simple UserPriorityClassifier extends PacketClassifier
+namespace inet;
+
+class Ieee8023TypeOrLength extends FieldsChunk
 {
-    parameters:
-        classifierClass = default("inet::queueing::PacketUserPriorityReqClassifier");
+    chunkLength = B(2);
+    int typeOrLength;
 }

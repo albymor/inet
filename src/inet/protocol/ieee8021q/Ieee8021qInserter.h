@@ -13,13 +13,26 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 //
 
-package inet.protocol.server;
+#ifndef __INET_IEEE8021QINSERTER_H
+#define __INET_IEEE8021QINSERTER_H
 
-import inet.queueing.base.PacketServerBase;
+#include "inet/queueing/base/PacketFlowBase.h"
 
-simple PreemptingServer extends PacketServerBase
+namespace inet {
+
+using namespace inet::queueing;
+
+class INET_API Ieee8021qInserter : public PacketFlowBase
 {
-    parameters:
-        double datarate @unit(bps);
-        @class(PreemptingServer);
-}
+  protected:
+    int etherType = -1;
+
+  protected:
+    virtual void initialize(int stage) override;
+    virtual void processPacket(Packet *packet) override;
+};
+
+} // namespace inet
+
+#endif // ifndef __INET_IEEE8021QINSERTER_H
+
