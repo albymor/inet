@@ -23,7 +23,7 @@ import inet.protocol.common.InterPacketGap;
 import inet.protocol.common.PacketSerializer;
 import inet.protocol.common.PacketTrimmer;
 import inet.protocol.common.PaddingInserter;
-import inet.protocol.connectionmanager.TxConnectionManager;
+import inet.protocol.connectionmanager.ConnectionManager;
 import inet.protocol.transceiver.StreamingReceiver;
 import inet.protocol.transceiver.StreamingTransmitter;
 import inet.queueing.queue.PacketQueue;
@@ -94,7 +94,7 @@ module EthernetInterfaceRaw extends InterfaceEntry like IEthernetInterface
             parameters:
                 @display("p=150,1000");
         }
-        txCm: TxConnectionManager {
+        cm: ConnectionManager {
             parameters:
                 @display("p=150,1100");
         }
@@ -124,10 +124,11 @@ module EthernetInterfaceRaw extends InterfaceEntry like IEthernetInterface
         preambleInsertion.out --> serializer.in;
         serializer.out --> ifg.in;
         ifg.out --> transmitter.in;
-        transmitter.out --> txCm.in;
-        txCm.physOut --> { @display("m=s"); } --> phys$o;
+        transmitter.out --> cm.in;
+        cm.physOut --> { @display("m=s"); } --> phys$o;
 
-        phys$i --> { @display("m=s"); } --> receiver.in;
+        phys$i --> { @display("m=s"); } --> cm.physIn;
+        cm.out --> receiver.in;
         receiver.out --> preambleChecker.in;
         preambleChecker.out --> fcsChecker2.in;
         fcsChecker2.out --> { @display("m=n"); } --> upperLayerOut;

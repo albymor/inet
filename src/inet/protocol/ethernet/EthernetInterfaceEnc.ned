@@ -26,7 +26,7 @@ import inet.protocol.common.InterPacketGap;
 import inet.protocol.common.PacketSerializer;
 import inet.protocol.common.PacketTrimmer;
 import inet.protocol.common.PaddingInserter;
-import inet.protocol.connectionmanager.TxConnectionManager;
+import inet.protocol.connectionmanager.ConnectionManager;
 import inet.protocol.transceiver.StreamingReceiver;
 import inet.protocol.transceiver.StreamingTransmitter;
 import inet.queueing.queue.PacketQueue;
@@ -115,9 +115,9 @@ module EthernetInterfaceEnc extends InterfaceEntry like IEthernetInterface
             parameters:
                 @display("p=150,1200");
         }
-        txCm: TxConnectionManager {
+        cm: ConnectionManager {
             parameters:
-                @display("p=150,1300");
+                @display("p=300,1300");
         }
         fcsChecker: EthernetFcsChecker2 {
             parameters:
@@ -154,8 +154,8 @@ module EthernetInterfaceEnc extends InterfaceEntry like IEthernetInterface
         }
 
         encap.lowerLayerOut --> qEncap.upperLayerIn if exists(qEncap);
-        qEncap.lowerLayerOut -->queue.in if exists(qEncap);
-        encap.lowerLayerOut -->queue.in if !exists(qEncap);
+        qEncap.lowerLayerOut --> queue.in if exists(qEncap);
+        encap.lowerLayerOut --> queue.in if !exists(qEncap);
 
         queue.out --> server.in;
         server.out --> fcsDropper.in;
@@ -166,8 +166,8 @@ module EthernetInterfaceEnc extends InterfaceEntry like IEthernetInterface
         preambleInserter.out --> serializer.in;
         serializer.out --> ifg.in;
         ifg.out --> transmitter.in;
-        transmitter.out --> txCm.in;
-        txCm.physOut --> { @display("m=s"); } --> phys$o;
+        transmitter.out --> cm.in;
+        cm.physOut --> { @display("m=s"); } --> phys$o;
 
         fcsChecker.out --> encap.lowerLayerIn if !exists(qEncap);
         fcsChecker.out --> qEncap.lowerLayerIn if exists(qEncap);
@@ -175,6 +175,7 @@ module EthernetInterfaceEnc extends InterfaceEntry like IEthernetInterface
 
         preambleChecker.out --> fcsChecker.in;
         receiver.out --> preambleChecker.in;
-        phys$i --> { @display("m=s"); } --> receiver.in;
+        cm.out --> receiver.in;
+        phys$i --> { @display("m=s"); } --> cm.physIn;
 }
 
