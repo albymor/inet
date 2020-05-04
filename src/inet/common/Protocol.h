@@ -119,6 +119,7 @@ class INET_API Protocol
     static const Protocol udp;
     static const Protocol xmac;
     static const Protocol xtp;
+    static const Protocol profinet;
 
     // INET specific conceptual protocol identifiers (in alphanumeric order)
     static const Protocol ackingMac;
