@@ -78,7 +78,7 @@ void StreamingTransmitter::startTx(Packet *packet)
 void StreamingTransmitter::endTx()
 {
     EV_INFO << "Ending transmission: packetName = " << txPacket->getName() << std::endl;
-    sendPacketEnd(txSignal, outputGate, txSignal->getDuration());
+    sendPacketEnd(txSignal, outputGate, 0, txSignal->getDuration(), bps(datarate).get());
     producer->handlePushPacketProcessed(txPacket, inputGate->getPathStartGate(), true);
     delete txPacket;
     txPacket = nullptr;
@@ -95,7 +95,7 @@ void StreamingTransmitter::abortTx()
     txPacket->eraseAtBack(txPacket->getTotalLength() - transmittedLength);
     auto signal = encodePacket(txPacket);
     EV_INFO << "Aborting transmission: packetName = " << txPacket->getName() << ", length = " << txPacket->getTotalLength() << ", duration = " << signal->getDuration() << std::endl;
-    sendPacketEnd(txSignal, outputGate, signal->getDuration());
+    sendPacketEnd(txSignal, outputGate, 0, signal->getDuration(), bps(datarate).get());
     producer->handlePushPacketProcessed(txPacket, inputGate->getPathStartGate(), true);
     txPacket = nullptr;
     delete txSignal;
